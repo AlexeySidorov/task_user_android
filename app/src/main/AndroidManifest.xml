@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="game.lightmixdesign.com.myapplication">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -10,11 +11,15 @@
         android:label="@string/ApplicationName"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:appComponentFactory"
+        android:appComponentFactory="whateverString">
+
         <activity
-            android:name=".MainActivity"
+            android:name=".Activites.UsersActivity"
             android:label="@string/ApplicationName"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,10 +27,11 @@
             </intent-filter>
         </activity>
 
-      <!--  <activity
-            android:name="."
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />-->
+        <activity
+            android:name=".Activites.FriendsActivity"
+            android:label="@string/ApplicationName"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="InnerclassSeparator" />
 
     </application>
 

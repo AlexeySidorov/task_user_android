@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="VersionName">1.0</string>
+    <string name="text_open">Open</string>
+    <string name="text_close">Close</string>
     <string name="ApplicationName">Task3</string>
     <string name="age">Age:</string>
     <string name="e_mail">E-mail:</string>
