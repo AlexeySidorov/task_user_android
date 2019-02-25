@@ -5,7 +5,7 @@ import android.content.res.Configuration;
 
 import game.lightmixdesign.com.myapplication.Base.BaseActivity;
 
-import static game.lightmixdesign.com.myapplication.Utils.SystemUtils.adjustFontScale;
+import static game.lightmixdesign.com.myapplication.Infrastructure.Utils.SystemUtils.adjustFontScale;
 
 
 public class Task3App extends Application {

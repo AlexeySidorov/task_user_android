@@ -1,4 +1,4 @@
-package game.lightmixdesign.com.myapplication.Utils;
+package game.lightmixdesign.com.myapplication.Infrastructure.Utils;
 
 import android.content.Context;
 import android.content.res.Configuration;

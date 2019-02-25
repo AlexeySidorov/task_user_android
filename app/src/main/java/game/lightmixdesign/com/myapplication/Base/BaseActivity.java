@@ -1,7 +1,6 @@
 package game.lightmixdesign.com.myapplication.Base;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.PorterDuff;
@@ -10,7 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -18,8 +16,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.transition.Fade;
-import android.transition.Slide;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,7 +28,6 @@ import java.util.Objects;
 
 import game.lightmixdesign.com.myapplication.R;
 import game.lightmixdesign.com.myapplication.Task3App;
-import game.lightmixdesign.com.myapplication.Utils.SystemUtils;
 
 
 public abstract class BaseActivity extends AppCompatActivity {

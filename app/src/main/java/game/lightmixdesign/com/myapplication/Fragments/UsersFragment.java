@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import game.lightmixdesign.com.myapplication.Base.BaseFragment;
+import game.lightmixdesign.com.myapplication.Infrastructure.Rest.RestApi;
 import game.lightmixdesign.com.myapplication.R;
 
 public class UsersFragment extends BaseFragment {
@@ -25,6 +26,6 @@ public class UsersFragment extends BaseFragment {
     }
 
     private void initViews() {
-
+        RestApi.getUsers().subscribe().dispose();
     }
 }
