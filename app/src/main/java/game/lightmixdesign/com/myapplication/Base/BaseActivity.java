@@ -9,12 +9,15 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+
+import androidx.appcompat.app.ActionBar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import android.transition.Fade;
 import android.transition.Slide;
 import android.view.Gravity;
@@ -54,13 +57,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         initViews();
     }
 
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(newBase);
-
-        SystemUtils.adjustFontScale(newBase, getResources().getConfiguration());
-    }
-
     public void setOnlyMyViews(boolean onlyMyViews) {
         this.onlyMyViews = onlyMyViews;
     }
@@ -69,12 +65,25 @@ public abstract class BaseActivity extends AppCompatActivity {
     @SuppressWarnings("deprecation")
     public void initViews() {
         if (!onlyMyViews) {
-            mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-            toolbar = (Toolbar) findViewById(R.id.toolbar);
+            mDrawerLayout = findViewById(R.id.drawer_layout);
+            toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
-            toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
             Objects.requireNonNull(getSupportActionBar()).setBackgroundDrawable(
                     new ColorDrawable(ContextCompat.getColor(this, R.color.transparent)));
+
+            mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.text_open, R.string.text_close) {
+                @Override
+                public void onDrawerOpened(View drawerView) {
+                    InputMethodManager inputMethodManager =
+                            (InputMethodManager) getSystemService(
+                                    INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(
+                            getCurrentFocus().getWindowToken(), 0);
+                }
+            };
+
+            mDrawerLayout.setDrawerListener(mDrawerToggle);
+            initMainButtonToolBar();
         }
 
         initViews2();
@@ -83,15 +92,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     public void menuUpdate() {
         View headerLayout = mNavigationView.getHeaderView(0);
-    }
-
-    public int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
     }
 
     private boolean isMenuButton;
@@ -162,17 +162,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         mDrawerToggle.syncState();
     }
 
-    //Анимация перехода для 21
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void setupWindowAnimations() {
-        Fade fade = new Fade();
-        fade.setDuration(1000);
-        getWindow().setEnterTransition(fade);
-        Slide slide = new Slide();
-        slide.setDuration(1000);
-        getWindow().setExitTransition(slide);
-    }
-
     // Свои вьюхи
     protected abstract void initViews2();
 
@@ -221,7 +210,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        Menu menuNav = mNavigationView.getMenu();
+        //Menu menuNav = mNavigationView.getMenu();
 
         return true;
     }
@@ -247,7 +236,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setElevation(0);
     }
 
-    @SuppressWarnings("deprecation")
     public void setVisibleNavigationButton() {
         Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(null);
     }

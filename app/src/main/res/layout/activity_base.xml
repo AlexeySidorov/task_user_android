@@ -15,21 +15,21 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="false">
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/AppTheme.AppBarOverlay"
             app:layout_scrollFlags="scroll|enterAlways">
 
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/toolbar_size"
                 android:theme="@style/Toolbar"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-        </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <View
             android:layout_width="match_parent"
@@ -42,11 +42,5 @@
             android:layout_margin="12dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-    <FrameLayout
-        android:id="@+id/navigation_frame"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="left|start" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

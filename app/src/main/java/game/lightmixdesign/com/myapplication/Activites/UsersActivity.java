@@ -17,6 +17,7 @@ public class UsersActivity extends BaseActivity {
         setColorToolbarMainButton(R.color.white);
         super.onCreate(savedInstanceState);
         setTitle("Users");
+        setVisibleNavigationButton();
     }
 
     @Override
