@@ -5,45 +5,78 @@ import java.util.Date;
 import java.util.UUID;
 
 import game.lightmixdesign.com.myapplication.Infrastructure.ResponseModels.UserResponseModel;
+import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
 public class User extends RealmObject {
     @PrimaryKey
-    private int id;
+    public Integer id;
 
-    private UUID guid;
+    public String guid;
 
-    private boolean isActive;
+    public boolean isActive;
 
-    private String balance;
+    public String balance;
 
-    private int age;
+    public Integer age;
 
-    public UserResponseModel.ColorType eyeColor;
+    public String eyeColor;
 
-    private String name;
+    public String name;
 
-    private String company;
+    public String company;
 
-    private String email;
+    public String email;
 
-    private String phone;
+    public String phone;
 
-    private String address;
+    public String address;
 
-    private String about;
+    public String about;
 
-    private Date registered;
+    public Date registered;
 
-    private double latitude;
+    public double latitude;
 
-    private double longitude;
+    public double longitude;
 
-    @Ignore
-    private ArrayList<Friend> friends;
+    public RealmList<Integer> friends;
 
-    @Ignore
-    private ArrayList<Friend> tags;
+    public RealmList<String> tags;
+
+    public String figure;
+
+    public String gender;
+
+    public User() {
+
+    }
+
+    public User(Integer id, UUID guid, boolean isActive, String balance, Integer age,
+                UserResponseModel.ColorType eyeColor, String name, String company, String email,
+                String phone, String address, String about, Date registered, double latitude,
+                double longitude, ArrayList<Integer> friends, ArrayList<String> tags,
+                UserResponseModel.Figure figure, String gender) {
+
+        this.id = id;
+        this.guid = guid.toString();
+        this.isActive = isActive;
+        this.balance = balance;
+        this.age = age;
+        this.eyeColor = eyeColor.name();
+        this.name = name;
+        this.company = company;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+        this.about = about;
+        this.registered = registered;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.friends = new RealmList<>(friends.toArray(new Integer[0]));
+        this.tags = new RealmList<>(tags.toArray(new String[0]));
+        this.figure = figure.name();
+        this.gender = gender;
+    }
 }

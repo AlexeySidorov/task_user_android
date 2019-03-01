@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.res.Configuration;
 
 import game.lightmixdesign.com.myapplication.Base.BaseActivity;
+import io.realm.Realm;
 
 import static game.lightmixdesign.com.myapplication.Infrastructure.Utils.SystemUtils.adjustFontScale;
 
@@ -16,6 +17,7 @@ public class Task3App extends Application {
         super.onCreate();
 
         instance = this;
+        Realm.init(this);
     }
 
     @Override

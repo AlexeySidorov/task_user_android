@@ -19,6 +19,7 @@ public class UserResponseModel {
 
     public UUID guid;
 
+    @SerializedName("isActive")
     public boolean isActive;
 
     public String balance;

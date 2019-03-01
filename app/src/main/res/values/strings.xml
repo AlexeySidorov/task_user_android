@@ -12,4 +12,5 @@
     <string name="about">About:</string>
     <string name="date_registered">Date registered:</string>
     <string name="name">Name:</string>
+    <string name="loading">Please wait</string>
 </resources>
