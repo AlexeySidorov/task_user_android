@@ -49,6 +49,7 @@ public class UsersFragment extends BaseFragment<UsersViewModel> implements Adapt
         recyclerView.setAdapter(new UserAdapter(viewModel, this, this));
         recyclerView.setHasFixedSize(true);
 
+        setTitleToolbar("Users");
         setHasOptionsMenu(true);
         setBinding();
     }

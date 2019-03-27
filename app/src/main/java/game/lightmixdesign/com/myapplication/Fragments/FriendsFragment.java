@@ -3,6 +3,7 @@ package game.lightmixdesign.com.myapplication.Fragments;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -88,6 +89,8 @@ public class FriendsFragment extends BaseFragment<FriendsViewModel>
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         disposables = new CompositeDisposable();
+        setTitleToolbar("Friends");
+
         initData();
     }
 

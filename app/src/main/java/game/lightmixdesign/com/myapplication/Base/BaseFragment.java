@@ -1,24 +1,36 @@
 package game.lightmixdesign.com.myapplication.Base;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.rey.material.widget.LinearLayout;
+
+import java.util.Objects;
+
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModel;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import dagger.android.support.DaggerFragment;
+import game.lightmixdesign.com.myapplication.R;
 
 public abstract class BaseFragment<T extends ViewModel> extends DaggerFragment {
 
     private T viewModel;
     private Unbinder unbinder;
     private AppCompatActivity activity;
+    private Toolbar toolbar;
 
     public abstract T getViewModel();
 
@@ -36,6 +48,7 @@ public abstract class BaseFragment<T extends ViewModel> extends DaggerFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         activity = (AppCompatActivity) context;
+        toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
     }
 
     @Override
@@ -56,21 +69,14 @@ public abstract class BaseFragment<T extends ViewModel> extends DaggerFragment {
             unbinder = null;
         }
     }
-}
-
-/*public class BaseFragment extends Fragment {
-    private AppCompatActivity activity;
-    private Toolbar toolbar;
 
     @SuppressLint("ResourceAsColor")
     public void setBackgroundToolbar(int color) {
-        activity = ((AppCompatActivity) Objects.requireNonNull(getActivity()));
-        toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
         Objects.requireNonNull(activity.getSupportActionBar()).setBackgroundDrawable(
                 new ColorDrawable(ContextCompat.getColor(activity, color)));
     }
 
-    @SuppressLint("ResourceAsColor")
+    @SuppressLint({"ResourceAsColor", "ObsoleteSdkInt"})
     public void setTitleToolbar(String title) {
         if (activity == null || toolbar == null) return;
 
@@ -89,4 +95,4 @@ public abstract class BaseFragment<T extends ViewModel> extends DaggerFragment {
 
         toolbar.addView(textView);
     }
-}*/
+}

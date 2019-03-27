@@ -18,6 +18,9 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setColorToolbarMainButton(R.color.white);
+        setToolBarMenuButton(false);
+        setHideMainButtonInToolbar();
 
         if (savedInstanceState == null)
             getSupportFragmentManager().beginTransaction().add(R.id.container, new UsersFragment()).commit();
