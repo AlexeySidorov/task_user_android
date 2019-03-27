@@ -8,24 +8,28 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import game.lightmixdesign.com.myapplication.Infrastructure.Callbacks.HolderClickListener;
 import game.lightmixdesign.com.myapplication.Infrastructure.Models.User;
 import game.lightmixdesign.com.myapplication.R;
 
 public class UserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-    private AppCompatTextView nameUser;
-    private AppCompatTextView emailUser;
-    private AppCompatImageView status;
     private View itemView;
     private HolderClickListener<User> listener;
+
+    @BindView(R.id.name_user)
+    AppCompatTextView nameUser;
+    @BindView(R.id.email_user)
+    AppCompatTextView emailUser;
+    @BindView(R.id.icon_status_user)
+    AppCompatImageView status;
 
     public UserViewHolder(@NonNull View itemView) {
         super(itemView);
 
         this.itemView = itemView;
-        nameUser = itemView.findViewById(R.id.name_user);
-        emailUser = itemView.findViewById(R.id.email_user);
-        status = itemView.findViewById(R.id.icon_status_user);
+        ButterKnife.bind(this, itemView);
     }
 
     public void BindData(User user) {

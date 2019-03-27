@@ -18,7 +18,7 @@
         android:appComponentFactory="whateverString">
 
         <activity
-            android:name=".Activites.UsersActivity"
+            android:name=".Activites.MainActivity"
             android:label="@string/ApplicationName"
             tools:ignore="InnerclassSeparator">
             <intent-filter>
@@ -27,11 +27,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".Activites.FriendsActivity"
-            android:label="@string/ApplicationName"
-            tools:ignore="InnerclassSeparator" />
 
     </application>
 

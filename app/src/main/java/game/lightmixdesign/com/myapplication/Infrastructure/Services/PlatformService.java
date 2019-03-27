@@ -30,7 +30,7 @@ public class PlatformService {
         }
     }
 
-    public static void openMaps(Context ctx, double latitude, double longitude) {
+    public static void openMaps(Context ctx, Double latitude, Double longitude) {
         String url = String.format(Locale.ENGLISH, "geo:%f,%f?q=%f,%f (My marker)",
                 latitude, longitude, latitude, longitude);
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));

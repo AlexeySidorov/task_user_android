@@ -1,22 +1,64 @@
 package game.lightmixdesign.com.myapplication.Base;
 
-import android.annotation.SuppressLint;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.appcompat.widget.Toolbar;
+import android.content.Context;
+import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
 
-import java.util.Objects;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModel;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import dagger.android.support.DaggerFragment;
 
-import game.lightmixdesign.com.myapplication.R;
+public abstract class BaseFragment<T extends ViewModel> extends DaggerFragment {
 
+    private T viewModel;
+    private Unbinder unbinder;
+    private AppCompatActivity activity;
 
-public class BaseFragment extends Fragment {
+    public abstract T getViewModel();
+
+    @LayoutRes
+    protected abstract int layoutRes();
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(layoutRes(), container, false);
+        unbinder = ButterKnife.bind(this, view);
+        return view;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        activity = (AppCompatActivity) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        activity = null;
+    }
+
+    public AppCompatActivity getBaseActivity() {
+        return activity;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (unbinder != null) {
+            unbinder.unbind();
+            unbinder = null;
+        }
+    }
+}
+
+/*public class BaseFragment extends Fragment {
     private AppCompatActivity activity;
     private Toolbar toolbar;
 
@@ -47,4 +89,4 @@ public class BaseFragment extends Fragment {
 
         toolbar.addView(textView);
     }
-}
+}*/

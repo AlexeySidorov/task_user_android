@@ -15,17 +15,16 @@ import game.lightmixdesign.com.myapplication.Infrastructure.Callbacks.AdapterCli
 import game.lightmixdesign.com.myapplication.Infrastructure.Callbacks.HolderClickListener;
 import game.lightmixdesign.com.myapplication.Infrastructure.Models.User;
 import game.lightmixdesign.com.myapplication.R;
-import game.lightmixdesign.com.myapplication.ViewModels.UsersViewModel;
+import game.lightmixdesign.com.myapplication.ViewModels.FriendsViewModel;
 
-public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> implements HolderClickListener<User> {
+public class FriendAdapter extends RecyclerView.Adapter<UserViewHolder> implements HolderClickListener<User> {
     private AdapterClickListener<User> listener;
     private final List<User> data = new ArrayList<>();
 
-    public UserAdapter(UsersViewModel viewModel, LifecycleOwner lifecycleOwner, AdapterClickListener<User> listener) {
+    public FriendAdapter(FriendsViewModel viewModel, LifecycleOwner lifecycleOwner, AdapterClickListener<User> listener) {
         this.listener = listener;
         viewModel.getUsers().observe(lifecycleOwner, repos -> {
             data.clear();
-
             if (repos != null) {
                 data.addAll(repos);
                 notifyDataSetChanged();

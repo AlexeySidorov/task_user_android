@@ -1,25 +1,21 @@
 package game.lightmixdesign.com.myapplication.Fragments;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 
 import java.util.Objects;
 
+import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -27,64 +23,72 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import game.lightmixdesign.com.myapplication.Activites.FriendsActivity;
-import game.lightmixdesign.com.myapplication.Adapters.UserAdapter;
+import butterknife.BindView;
+import game.lightmixdesign.com.myapplication.Adapters.FriendAdapter;
 import game.lightmixdesign.com.myapplication.Base.BaseFragment;
 import game.lightmixdesign.com.myapplication.Infrastructure.Callbacks.AdapterClickListener;
-import game.lightmixdesign.com.myapplication.Infrastructure.Helpers.DateHelper;
 import game.lightmixdesign.com.myapplication.Infrastructure.Helpers.GsonHelper;
 import game.lightmixdesign.com.myapplication.Infrastructure.Helpers.UserDataHelper;
 import game.lightmixdesign.com.myapplication.Infrastructure.Models.User;
-import game.lightmixdesign.com.myapplication.Infrastructure.Repositories.UserRepository;
 import game.lightmixdesign.com.myapplication.Infrastructure.ResponseModels.UserResponseActivityModel;
+import game.lightmixdesign.com.myapplication.Infrastructure.ResponseModels.UserResponseModel;
 import game.lightmixdesign.com.myapplication.Infrastructure.Services.DialogService;
 import game.lightmixdesign.com.myapplication.Infrastructure.Services.PlatformService;
 import game.lightmixdesign.com.myapplication.R;
+import game.lightmixdesign.com.myapplication.ViewModels.FriendsViewModel;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 
-import static game.lightmixdesign.com.myapplication.Infrastructure.ResponseModels.UserResponseModel.*;
+public class FriendsFragment extends BaseFragment<FriendsViewModel>
+        implements AdapterClickListener<User>, View.OnClickListener {
 
-public class FriendsFragment extends BaseFragment implements AdapterClickListener<User>, View.OnClickListener {
-    private AppCompatTextView userName;
-    private AppCompatTextView age;
-    private AppCompatImageView figureImg;
-    private View status;
-    private AppCompatTextView date;
-    private AppCompatTextView email;
-    private AppCompatTextView phone;
-    private AppCompatTextView address;
-    private AppCompatTextView geo;
-    private AppCompatTextView about;
-    private AppCompatTextView title;
-    private RecyclerView friendsList;
-    private UserResponseActivityModel user;
+    @BindView(R.id.name)
+    AppCompatTextView userName;
+    @BindView(R.id.age)
+    AppCompatTextView age;
+    @BindView(R.id.figure)
+    AppCompatImageView figureImg;
+    @BindView(R.id.circle)
+    View status;
+    @BindView(R.id.date_reg)
+    AppCompatTextView date;
+    @BindView(R.id.email)
+    AppCompatTextView email;
+    @BindView(R.id.phone)
+    AppCompatTextView phone;
+    @BindView(R.id.address)
+    AppCompatTextView address;
+    @BindView(R.id.geo_coordinates)
+    AppCompatTextView geo;
+    @BindView(R.id.about)
+    AppCompatTextView about;
+    @BindView(R.id.title_friend_list)
+    AppCompatTextView title;
+    @BindView(R.id.friend_list)
+    RecyclerView friendsList;
 
-    @SuppressLint("InflateParams")
+    @Inject
+    FriendsViewModel viewModel;
+    private CustomProgressDialog progress;
+    private CompositeDisposable disposables;
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_friends, null);
+    public FriendsViewModel getViewModel() {
+        return viewModel;
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initViews(view);
+    protected int layoutRes() {
+        return R.layout.activity_friends;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        disposables = new CompositeDisposable();
         initData();
-    }
-
-    private void initViews(View view) {
-        userName = view.findViewById(R.id.name);
-        age = view.findViewById(R.id.age);
-        status = view.findViewById(R.id.circle);
-        figureImg = view.findViewById(R.id.figure);
-        date = view.findViewById(R.id.date_reg);
-        phone = view.findViewById(R.id.phone);
-        email = view.findViewById(R.id.email);
-        address = view.findViewById(R.id.address);
-        geo = view.findViewById(R.id.geo_coordinates);
-        about = view.findViewById(R.id.about);
-        title = view.findViewById(R.id.title_friend_list);
-        friendsList = view.findViewById(R.id.friend_list);
     }
 
     private void initData() {
@@ -94,25 +98,27 @@ public class FriendsFragment extends BaseFragment implements AdapterClickListene
         String json = bundle.getString("user");
         if (json == null || json.isEmpty()) return;
 
-        user = GsonHelper.getGson().fromJson(json, UserResponseActivityModel.class);
-        initDataView();
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void initDataView() {
-        userName.setText(user.name);
-        age.setText(user.age.toString());
-        date.setText(DateHelper.formateDate(user.registered, "HH:mm dd.MM.yy"));
-        phone.setText(user.phone);
-        email.setText(user.email);
-        address.setText(user.address);
-        geo.setText(user.latitude + ", " + user.longitude);
-        about.setText(user.about);
+        UserResponseActivityModel user = GsonHelper.getGson().fromJson(json, UserResponseActivityModel.class);
+        viewModel.initViewModel(user);
 
         initClickListener();
-        initStatusUser(user.eyeColor);
-        initFigure(user.favoriteFruit);
         initDataFriends();
+        setBinding();
+        setBindingAction();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initPermission();
+    }
+
+    private void initPermission() {
+        if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()),
+                Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.CALL_PHONE}, 1);
+        }
     }
 
     private void initClickListener() {
@@ -121,29 +127,30 @@ public class FriendsFragment extends BaseFragment implements AdapterClickListene
         geo.setOnClickListener(this);
     }
 
-    @SuppressLint("SetTextI18n")
     private void initDataFriends() {
-        title.setText("Friends by" + user.name);
-
-        UserAdapter adapter = new UserAdapter(UserRepository.getInstance().
-                getUsersByIds(user.friends), true);
-        adapter.setOnClickListener(this);
         friendsList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        friendsList.setAdapter(adapter);
+        friendsList.setAdapter(new FriendAdapter(viewModel, this, this));
         friendsList.setHasFixedSize(true);
     }
 
     @Override
     public void ItemClick(User item) {
-        if (item == null || !item.isActive) return;
+        if (!item.isActive) return;
+
+        viewModel.itemClick.onNext(item);
 
         UserResponseActivityModel user = UserDataHelper.convertUserToUserResponse(item);
         String json = GsonHelper.getGson().toJson(user);
 
-        Intent intent = new Intent(getActivity(), FriendsActivity.class);
+        Intent intent = new Intent();
         intent.putExtra("user", json);
 
-        startActivity(intent);
+        FriendsFragment fragment = new FriendsFragment();
+        fragment.setArguments(intent.getExtras());
+
+        getBaseActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, fragment)
+                .addToBackStack("FriendsFragment").commit();
     }
 
     @Override
@@ -151,7 +158,7 @@ public class FriendsFragment extends BaseFragment implements AdapterClickListene
 
     }
 
-    private void initFigure(Figure figure) {
+    private void initFigure(UserResponseModel.Figure figure) {
         int resourceFigure = 0;
 
         switch (figure) {
@@ -172,7 +179,7 @@ public class FriendsFragment extends BaseFragment implements AdapterClickListene
         Glide.with(this).load(resourceFigure).into(figureImg);
     }
 
-    private void initStatusUser(ColorType color) {
+    private void initStatusUser(UserResponseModel.ColorType color) {
         int resourceColor = 0;
 
         switch (color) {
@@ -204,29 +211,153 @@ public class FriendsFragment extends BaseFragment implements AdapterClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.phone:
-                PlatformService.callPhone(Objects.requireNonNull(getActivity()), user.phone);
+                viewModel.callPhone();
                 break;
             case R.id.email:
-                PlatformService.sendEmail(Objects.requireNonNull(getActivity()), user.email);
+                viewModel.sendEmail();
                 break;
             case R.id.geo_coordinates:
-                PlatformService.openMaps(Objects.requireNonNull(getActivity()), user.latitude, user.longitude);
+                viewModel.sendMapPoint();
                 break;
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    private void setBinding() {
+        viewModel.getLoading().observe(this, isLoading -> {
+            if (isLoading != null && isLoading) {
+                progress = DialogService.ProgressDialog(getBaseActivity(), "Please wait");
+            } else if (progress != null) {
+                progress.dismiss();
+            }
+        });
 
-        initPermission();
+        viewModel.getMessage().observe(this, observer -> {
+            if (observer != null) {
+                DialogService.MessageDialog(getBaseActivity(),
+                        observer.first ? "Error" : "Successfully", observer.second, "OK", null);
+            }
+        });
+
+        viewModel.getFruit().observe(this, fruit -> {
+            if (fruit != null) {
+                initFigure(fruit);
+            }
+        });
+
+        viewModel.getStatus().observe(this, status -> {
+            if (status != null) {
+                initStatusUser(status);
+            }
+        });
+
+        viewModel.getName().observe(this, name -> {
+            if (name != null) {
+                userName.setText(name);
+            }
+        });
+
+        viewModel.getAge().observe(this, ageStr -> {
+            if (ageStr != null) {
+                age.setText(ageStr);
+            }
+        });
+
+        viewModel.getDate().observe(this, dateStr -> {
+            if (dateStr != null) {
+                date.setText(dateStr);
+            }
+        });
+
+        viewModel.getAddress().observe(this, addressStr -> {
+            if (addressStr != null) {
+                address.setText(addressStr);
+            }
+        });
+
+        viewModel.getEmail().observe(this, emailStr -> {
+            if (emailStr != null) {
+                email.setText(emailStr);
+            }
+        });
+
+        viewModel.getPhone().observe(this, phoneStr -> {
+            if (phoneStr != null) {
+                phone.setText(phoneStr);
+            }
+        });
+
+        viewModel.getTitleFriend().observe(this, titleStr -> {
+            if (titleStr != null) {
+                title.setText(titleStr);
+            }
+        });
+
+        viewModel.getAbout().observe(this, aboutStr -> {
+            if (aboutStr != null) {
+                about.setText(aboutStr);
+            }
+        });
+
+        viewModel.getLocation().observe(this, locationStr -> {
+            if (locationStr != null) {
+                geo.setText(locationStr);
+            }
+        });
     }
 
-    private void initPermission() {
-        if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()),
-                Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{Manifest.permission.CALL_PHONE}, 1);
+    private void setBindingAction() {
+        disposables.add(viewModel.callPhone.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<String>() {
+                    @Override
+                    public void onNext(String s) {
+                        PlatformService.callPhone(getBaseActivity(), s);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        /*ignore*/
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        /*ignore*/
+                    }
+                }));
+
+        disposables.add(viewModel.sendEmail.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<String>() {
+                    @Override
+                    public void onNext(String s) {
+                        PlatformService.sendEmail(getBaseActivity(), s);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        /*ignore*/
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        /*ignore*/
+                    }
+                }));
+
+        disposables.add(viewModel.sendMapPoint.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<android.util.Pair<Double, Double>>() {
+                    @Override
+                    public void accept(android.util.Pair<Double, Double> doubleDoublePair) throws Exception {
+                        PlatformService.openMaps(getBaseActivity(), doubleDoublePair.first, doubleDoublePair.second);
+                    }
+                }));
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        if (disposables != null) {
+            disposables.clear();
+            disposables = null;
         }
     }
 }

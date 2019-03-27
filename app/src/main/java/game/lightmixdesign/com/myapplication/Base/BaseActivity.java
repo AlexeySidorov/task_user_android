@@ -1,36 +1,27 @@
 package game.lightmixdesign.com.myapplication.Base;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.content.ContextCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
 
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
+import butterknife.ButterKnife;
+import dagger.android.support.DaggerAppCompatActivity;
 
-import com.google.android.material.navigation.NavigationView;
+public abstract class BaseActivity extends DaggerAppCompatActivity {
 
-import java.util.Objects;
+    @LayoutRes
+    protected abstract int layoutRes();
 
-import game.lightmixdesign.com.myapplication.R;
-import game.lightmixdesign.com.myapplication.Task3App;
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(layoutRes());
+        ButterKnife.bind(this);
+    }
+}
 
-
-public abstract class BaseActivity extends AppCompatActivity {
+/*public abstract class BaseActivity extends AppCompatActivity {
     private static final String TAG = "BaseActivity";
     public int selfMenuItem = -1;
     boolean onlyMyViews = false;
@@ -200,7 +191,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 mNavigationView.setCheckedItem(selfMenuItem);
         }
 
-        myApp.setCurrentActivity(this);
+       // myApp.setCurrentActivity(this);
     }
 
     @Override
@@ -256,8 +247,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void clearReferences() {
-        Activity currActivity = myApp.getCurrentActivity();
-        if (this.equals(currActivity))
-            myApp.setCurrentActivity(null);
+       // Activity currActivity = myApp.getCurrentActivity();
+        //if (this.equals(currActivity))
+       //     myApp.setCurrentActivity(null);
     }
-}
+}*/
